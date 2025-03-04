@@ -1,0 +1,13 @@
+{
+  "name": "YouTube Ad Audio Blocker",
+  "version": "1.0",
+  "manifest_version": 3,
+  "description": "Mutes audio during YouTube ads",
+  "permissions": ["activeTab", "scripting"],
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/*"],
+      "js": ["contentScript.js"]
+    }
+  ]
+}
