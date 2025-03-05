@@ -9,7 +9,15 @@ let checkInterval = null;
 
 // Wait for the page to be fully loaded
 window.addEventListener("load", () => {
-  setTimeout(initialize, 1000);
+  setTimeout(() => {
+    chrome.storage.sync.get(["extensionEnabled"], (data) => {
+      if (data.extensionEnabled === false) {
+        console.log("Extension is OFF");
+        return;
+      }
+      initialize();
+    });
+  }, 1000);
 });
 
 // Initialize when page loads
@@ -178,8 +186,14 @@ function listenForPageChanges() {
 
       // Reinitialize on page change
       setTimeout(() => {
-        findVideoElement();
-        setupAdDetection();
+        chrome.storage.sync.get(["extensionEnabled"], (data) => {
+          if (data.extensionEnabled === false) {
+            console.log("Extension is OFF");
+            return;
+          }
+          findVideoElement();
+          setupAdDetection();
+        });
       }, 1000);
     }
   }, 1000);
@@ -196,5 +210,29 @@ if (
   document.readyState === "complete" ||
   document.readyState === "interactive"
 ) {
-  setTimeout(initialize, 500);
+  setTimeout(() => {
+    chrome.storage.sync.get(["extensionEnabled"], (data) => {
+      if (data.extensionEnabled === false) {
+        console.log("Extension is OFF");
+        return;
+      }
+      initialize();
+    });
+  }, 500);
 }
+
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName === "sync" && changes.extensionEnabled) {
+    if (!changes.extensionEnabled.newValue) {
+      console.log("Extension turned OFF");
+      if (observer) observer.disconnect();
+      if (checkInterval) clearInterval(checkInterval);
+      if (isMuted) {
+        restoreAudio();
+      }
+    } else {
+      console.log("Extension turned ON");
+      initialize();
+    }
+  }
+});
