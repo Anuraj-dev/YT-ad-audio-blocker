@@ -3,18 +3,16 @@
   "version": "1.1",
   "manifest_version": 3,
   "description": "Mutes audio during YouTube ads",
-  "permissions": ["activeTab", "scripting", "storage"],
+  "permissions": ["storage"],
   "host_permissions": ["*://*.youtube.com/*"],
   "content_scripts": [
     {
       "matches": ["*://*.youtube.com/*"],
-      "js": ["adDebugger.js", "contentScript.js"],
-      "run_at": "document_end"
+      "js": ["contentScript.js"],
+      "run_at": "document_start"
     }
   ],
   "icons": {
-    "16": "icon16.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
+    "48": "icon48.png"
   }
 }
