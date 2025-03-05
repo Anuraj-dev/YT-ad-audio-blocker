@@ -6,6 +6,7 @@ let previousVolume = 1;
 let videoElement = null;
 let observer = null;
 let checkInterval = null;
+let pageChangeInterval = null; // Add a global reference to the URL-checking interval
 
 // Wait for the page to be fully loaded
 window.addEventListener("load", () => {
@@ -176,7 +177,7 @@ function listenForPageChanges() {
   let lastUrl = location.href;
 
   // Check for URL changes
-  setInterval(() => {
+  pageChangeInterval = setInterval(() => {
     if (location.href !== lastUrl) {
       lastUrl = location.href;
 
@@ -227,6 +228,10 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
       console.log("Extension turned OFF");
       if (observer) observer.disconnect();
       if (checkInterval) clearInterval(checkInterval);
+      if (pageChangeInterval) clearInterval(pageChangeInterval);
+      if (videoElement) {
+        videoElement.removeEventListener("loadeddata", checkForAd);
+      }
       if (isMuted) {
         restoreAudio();
       }

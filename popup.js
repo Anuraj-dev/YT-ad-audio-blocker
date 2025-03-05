@@ -1,14 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("toggleExt");
+  const toggleInput = document.getElementById("toggleExt");
+  const toggleStatus = document.getElementById("toggleStatus");
   chrome.storage.sync.get(["extensionEnabled"], (data) => {
-    btn.textContent = data.extensionEnabled === false ? "Off" : "On";
+    if (data.extensionEnabled === undefined) {
+      chrome.storage.sync.set({ extensionEnabled: true });
+      toggleInput.checked = true;
+      toggleStatus.textContent = "ON";
+    } else {
+      toggleInput.checked = data.extensionEnabled;
+      toggleStatus.textContent = data.extensionEnabled ? "ON" : "OFF";
+    }
   });
-  btn.addEventListener("click", () => {
-    chrome.storage.sync.get(["extensionEnabled"], (data) => {
-      const newState = !data.extensionEnabled;
-      chrome.storage.sync.set({ extensionEnabled: newState }, () => {
-        btn.textContent = newState ? "On" : "Off";
-      });
-    });
+  toggleInput.addEventListener("change", () => {
+    const newState = toggleInput.checked;
+    toggleStatus.textContent = newState ? "ON" : "OFF";
+    chrome.storage.sync.set({ extensionEnabled: newState });
   });
 });
