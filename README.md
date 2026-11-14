@@ -67,3 +67,7 @@ The three PNG files are currently text placeholders, not images. Replace them wi
 - Restoring unmutes the player. The script saves the volume level, not the muted flag. If you muted the player yourself before an ad, it unmutes when the ad ends.
 - A saved volume of 0 comes back as 50%.
 - It is a personal utility. It has no store listing and no update channel. You update it with `git pull` and a reload on `chrome://extensions`.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
